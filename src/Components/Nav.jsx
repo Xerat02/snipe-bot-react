@@ -26,9 +26,11 @@ function Menu() {
             </div>
             <ul
               tabIndex={0}
-              className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
+              className="menu menu-sm dropdown-content bg-base-100 rounded-box z-10 mt-3 w-52 p-2 shadow"
             >
-              <Link to="/">Home</Link>
+              <li>
+                <Link to="/">Home</Link>
+              </li>
               <li>
                 <Link to="/snipes">Snipes</Link>
               </li>
@@ -37,6 +39,15 @@ function Menu() {
               </li>
               <li>
                 <Link to="/servers">Servers</Link>
+              </li>
+              <li>
+                <button
+                  onClick={() =>
+                    document.getElementById("my_modal_1")?.showModal()
+                  }
+                >
+                  About
+                </button>
               </li>
             </ul>
           </div>
@@ -58,6 +69,15 @@ function Menu() {
             <li>
               <Link to="/servers">Servers</Link>
             </li>
+            <li>
+              <button
+                onClick={() =>
+                  document.getElementById("my_modal_1")?.showModal()
+                }
+              >
+                About
+              </button>
+            </li>
           </ul>
         </div>
         <div className="navbar-end">
@@ -65,6 +85,27 @@ function Menu() {
             Start sniping now
           </Link>
         </div>
+        <dialog id="my_modal_1" className="modal">
+          <div className="modal-box">
+            <h3 className="font-bold text-lg">About</h3>
+            <div className="py-4 space-y-2">
+              <div>Vytvořil: Adam Dienstbier</div>
+              <div>Osobní číslo: A24B0342P</div>
+              <div>
+                Jedná se o uživatelské rozhraní napsané v Reactu pro bota, který
+                vyhledává výhodné obchodní nabídky ze hry Counter-Strike: Global
+                Offensive 2 na trzích třetích stran. Uživatel má možnost tyto
+                nabídky filtrovat, zobrazit detailní informace a využít různé
+                analýzy pro optimalizaci své obchodní strategie.
+              </div>
+            </div>
+            <div className="modal-action">
+              <form method="dialog">
+                <button className="btn">Zavřít</button>
+              </form>
+            </div>
+          </div>
+        </dialog>
       </div>
     </>
   );
