@@ -41,7 +41,7 @@ function ItemCard({ data }) {
   const risk = getRiskLevel(data.market_risk_factor);
 
   return (
-    <div className="card bg-base-100 w-full h-full flex flex-col rounded-lg overflow-hidden hover:scale-105 transition-shadow relative">
+    <div className="card bg-base-100 w-full h-full flex flex-col rounded-lg overflow-hidden hover:scale-102 transition-shadow relative">
       {/* Pulsující tečka v levém rohu */}
       <div className="absolute top-2 left-2 z-10">
         <span className="relative flex">

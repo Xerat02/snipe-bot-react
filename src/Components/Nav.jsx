@@ -41,7 +41,7 @@ function Menu() {
             </ul>
           </div>
           <Link to="/" className="btn btn-ghost normal-case text-lg lg:text-xl">
-            CSBAY snipebot
+            Snipebot
           </Link>
         </div>
         <div className="navbar-center hidden lg:flex">

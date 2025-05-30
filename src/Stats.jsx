@@ -112,7 +112,11 @@ function Stats() {
   }, []);
 
   useEffect(() => {
-    loadFilteredSkins();
+    const timeoutId = setTimeout(() => {
+      loadFilteredSkins();
+    }, 400);
+
+    return () => clearTimeout(timeoutId);
   }, [skinsFilter]);
 
   if (loading) {
