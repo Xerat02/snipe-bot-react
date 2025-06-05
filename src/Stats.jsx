@@ -23,6 +23,7 @@ function Stats() {
     "https://api.csbay.org/stats/busyness",
     "https://api.csbay.org/stats/skins",
     "https://api.csbay.org/stats/market",
+    "https://api.csbay.org/stats/market-age-histogram",
   ];
   const [allStats, setAllStats] = useState(null);
   const [hourStats, setHourStats] = useState([]);
@@ -31,6 +32,7 @@ function Stats() {
   const [skinsHasMore, setSkinsHasMore] = useState(true);
   const [skinsFilter, setSkinsFilter] = useState({ order: "desc" });
   const [marketStats, setMarketStats] = useState([]);
+  const [histoData, setHistoData] = useState([]);
   const [treemapData, setTreemapData] = useState([]);
   const [activeMarket, setActiveMarket] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -67,6 +69,8 @@ function Stats() {
     }
     setTreemapData(ar);
     setMarketStats(marketStats);
+    fetchHistoData(marketStats[activeMarket]._id);
+
     // skinsStats
     const skinsStats = await fetchData(endpoints[2], skinsFilter, 1);
     if (!skinsStats) {
@@ -75,6 +79,21 @@ function Stats() {
     }
     setSkinsStats(skinsStats);
     setLoading(false);
+  };
+
+  const fetchHistoData = async (marketName) => {
+    const data = await fetchData(endpoints[4], {
+      market_name: marketName,
+      max_lookback_days: 15,
+    });
+
+    if (!data) {
+      setError("Failed to fetch histogram data");
+      return;
+    }
+
+    setHistoData(data);
+    console.log("Histogram data:", data);
   };
 
   const loadFilteredSkins = async () => {
@@ -229,7 +248,11 @@ function Stats() {
                   ? "bg-base-100 text-primary font-bold"
                   : "bg-base-200"
               }`}
-              onClick={() => setActiveMarket(index)}
+              onClick={() => {
+                setActiveMarket(index);
+                if (activeMarket === index) return;
+                fetchHistoData(marketStats[index]._id);
+              }}
             >
               <div>{item._id}</div>
             </div>
@@ -302,6 +325,66 @@ function Stats() {
           </div>
         </div>
       </div>
+      {/* Market histogram */}
+      <GraphCardsContainer>
+        <GraphCard
+          title={` Offers count by days for ${
+            marketStats[activeMarket]?._id || "selected market"
+          }`}
+        >
+          {histoData && histoData.length > 0 ? (
+            <BarChart
+              width={500}
+              height={300}
+              data={histoData}
+              margin={{
+                top: 20,
+                right: 30,
+                left: 20,
+                bottom: 5,
+              }}
+            >
+              <CartesianGrid strokeDasharray="4 4" />
+              <XAxis dataKey="bin_label" />
+              <YAxis allowDecimals={false} />
+              <Tooltip formatter={(value) => [`${value} listings`, "Count"]} />
+              <Legend />
+              <Bar
+                dataKey="count"
+                fill="#605dff"
+                name={`Number of listings (${
+                  marketStats[activeMarket]?._id || "N/A"
+                })`}
+              />
+            </BarChart>
+          ) : (
+            <div className="flex flex-col items-center justify-center h-full min-h-[200px] p-4 text-center">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-12 w-12 text-gray-400 mb-3"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              <p className="text-gray-600 dark:text-gray-400 text-lg">
+                No Data Available
+              </p>
+              <p className="text-gray-500 dark:text-gray-500 text-sm mt-1">
+                There is no data to display for "
+                {marketStats[activeMarket]?._id || "the selected market"}" at
+                the moment.
+              </p>
+            </div>
+          )}
+        </GraphCard>
+      </GraphCardsContainer>
       {/* Market size by count */}
       <GraphCardsContainer>
         <GraphCard title="Market size by count">

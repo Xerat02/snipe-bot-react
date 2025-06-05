@@ -61,156 +61,172 @@ function SnipeFilter({ onFilterChange }) {
     return <ErrorMessage message={error} />;
   }
   return (
-    <div className="navbar w-full bg-base-100 shadow-sm rounded-lg mt-2 p-4">
-      <div className="flex flex-col xl:flex-row gap-4 w-full">
-        {/* Discount slider */}
-        <fieldset className="flex-1 bg-base-200 border border-base-300 p-4 rounded-box">
-          <legend className="fieldset-legend">Min discount</legend>
-          <input
-            type="range"
-            min={0}
-            max={100}
-            value={discount}
-            onChange={(e) => {
-              const value = parseInt(e.target.value, 10);
-              setDiscount(value);
-            }}
-            className={`range w-full ${
-              discount > 70
-                ? "range-success"
-                : discount > 30
-                ? "range-warning"
-                : "range-error"
-            }`}
-          />
-          <div
-            className={`text-center mt-2 ${
-              discount > 70
-                ? "text-success"
-                : discount > 30
-                ? "text-warning"
-                : "text-error"
-            }`}
-          >
-            {discount}%
-          </div>
-        </fieldset>
-        {/* Market select */}
-        <fieldset className="flex-1 bg-base-200 border border-base-300 p-4 rounded-box">
-          <legend className="fieldset-legend">Market</legend>
-          <select
-            className="select select-md w-full"
-            value={marketSelected || "-1"}
-            onChange={(e) => {
-              const value = e.target.value === "-1" ? null : e.target.value;
-              setMarketSelected(value);
-            }}
-          >
-            <option value="">Select market</option>
-            {market?.length > 0 ? (
-              market.map((item) => (
-                <option key={item} value={item}>
-                  {item}
-                </option>
-              ))
-            ) : (
-              <option disabled>Loading markets...</option>
-            )}
-          </select>
-        </fieldset>
-
-        {/* Risk select */}
-        <fieldset className="flex-1 bg-base-200 border border-base-300 p-4 rounded-box">
-          <legend className="fieldset-legend">Maximum risk</legend>
-          <select
-            className="select select-md w-full"
-            value={risk}
-            onChange={(e) => {
-              setRisk(e.target.value);
-            }}
-          >
-            <option value="-1">Select risk</option>
-            <option value="0">Low</option>
-            <option value="1">Medium</option>
-            <option value="2">High</option>
-          </select>
-        </fieldset>
-
-        {/* Min price */}
-        <fieldset className="flex-1 bg-base-200 border border-base-300 p-4 rounded-box">
-          <legend className="fieldset-legend">Min price</legend>
-          <input
-            type="number"
-            min="0"
-            placeholder="Min price"
-            className="input w-full"
-            value={minPrice}
-            onChange={(e) => {
-              try {
-                const value = parseFloat(e.target.value) || 0;
-                if (Number.isInteger(value)) {
-                  if (value >= maxPrice) {
-                    setMaxPrice(value + 1);
-                  }
-                  setMinPrice(value);
-                }
-              } catch (error) {
-                console.error("Invalid input:", error);
-                return;
-              }
-            }}
-          />
-        </fieldset>
-
-        {/* Max price */}
-        <fieldset className="flex-1 bg-base-200 border border-base-300 p-4 rounded-box">
-          <legend className="fieldset-legend">Max price</legend>
-          <input
-            type="number"
-            min="0"
-            placeholder="Max price"
-            className="input w-full"
-            value={maxPrice || ""}
-            onChange={(e) => {
-              try {
-                const value = parseFloat(e.target.value) || null;
-                if (Number.isInteger(value)) {
-                  if (value <= minPrice && value !== 0) {
-                    setMinPrice(value - 1);
-                  }
-                  setMaxPrice(value);
-                }
-              } catch (error) {
-                console.error("Invalid input:", error);
-                return;
-              }
-            }}
-          />
-        </fieldset>
-
-        {/* Notify checkbox */}
-        <fieldset className="flex-1 bg-base-200 border border-base-300 p-4 rounded-box">
-          <legend className="fieldset-legend">System notifications</legend>
-          <label className="fieldset-label">
+    <div className="w-full bg-base-100 shadow-sm rounded-lg mt-2 p-4">
+      <div className="flex flex-col">
+        <div className="flex flex-col xl:flex-row gap-4 w-full">
+          {/* Discount slider */}
+          <fieldset className="flex-1 bg-base-200 border border-base-300 p-4 rounded-box">
+            <legend className="fieldset-legend">Min discount</legend>
             <input
-              type="checkbox"
-              className="toggle toggle-accent"
+              type="range"
+              min={0}
+              max={100}
+              value={discount}
               onChange={(e) => {
-                if (Notification.permission !== "granted") {
-                  Notification.requestPermission();
+                const value = parseInt(e.target.value, 10);
+                setDiscount(value);
+              }}
+              className={`range w-full ${
+                discount > 70
+                  ? "range-success"
+                  : discount > 30
+                  ? "range-warning"
+                  : "range-error"
+              }`}
+            />
+            <div
+              className={`text-center mt-2 ${
+                discount > 70
+                  ? "text-success"
+                  : discount > 30
+                  ? "text-warning"
+                  : "text-error"
+              }`}
+            >
+              {discount}%
+            </div>
+          </fieldset>
+          {/* Market select */}
+          <fieldset className="flex-1 bg-base-200 border border-base-300 p-4 rounded-box">
+            <legend className="fieldset-legend">Market</legend>
+            <select
+              className="select select-md w-full"
+              value={marketSelected || "-1"}
+              onChange={(e) => {
+                const value = e.target.value === "-1" ? null : e.target.value;
+                setMarketSelected(value);
+              }}
+            >
+              <option value="">Select market</option>
+              {market?.length > 0 ? (
+                market.map((item) => (
+                  <option key={item} value={item}>
+                    {item}
+                  </option>
+                ))
+              ) : (
+                <option disabled>Loading markets...</option>
+              )}
+            </select>
+          </fieldset>
+
+          {/* Risk select */}
+          <fieldset className="flex-1 bg-base-200 border border-base-300 p-4 rounded-box">
+            <legend className="fieldset-legend">Maximum risk</legend>
+            <select
+              className="select select-md w-full"
+              value={risk}
+              onChange={(e) => {
+                setRisk(e.target.value);
+              }}
+            >
+              <option value="-1">Select risk</option>
+              <option value="0">Low</option>
+              <option value="1">Medium</option>
+              <option value="2">High</option>
+            </select>
+          </fieldset>
+
+          {/* Min price */}
+          <fieldset className="flex-1 bg-base-200 border border-base-300 p-4 rounded-box">
+            <legend className="fieldset-legend">Min price</legend>
+            <input
+              type="number"
+              min="0"
+              placeholder="Min price"
+              className="input w-full"
+              value={minPrice}
+              onChange={(e) => {
+                try {
+                  const value = parseFloat(e.target.value) || 0;
+                  if (Number.isInteger(value)) {
+                    if (value >= maxPrice) {
+                      setMaxPrice(value + 1);
+                    }
+                    setMinPrice(value);
+                  }
+                } catch (error) {
+                  console.error("Invalid input:", error);
+                  return;
                 }
-                setNotify(e.target.checked);
               }}
             />
-            Turn{" "}
-            {notify ? (
-              <span className="text-secondary">off</span>
-            ) : (
-              <span className="text-accent">on</span>
-            )}{" "}
-            notifications
-          </label>
-        </fieldset>
+          </fieldset>
+
+          {/* Max price */}
+          <fieldset className="flex-1 bg-base-200 border border-base-300 p-4 rounded-box">
+            <legend className="fieldset-legend">Max price</legend>
+            <input
+              type="number"
+              min="0"
+              placeholder="Max price"
+              className="input w-full"
+              value={maxPrice || ""}
+              onChange={(e) => {
+                try {
+                  const value = parseFloat(e.target.value) || null;
+                  if (Number.isInteger(value)) {
+                    if (value <= minPrice && value !== 0) {
+                      setMinPrice(value - 1);
+                    }
+                    setMaxPrice(value);
+                  }
+                } catch (error) {
+                  console.error("Invalid input:", error);
+                  return;
+                }
+              }}
+            />
+          </fieldset>
+
+          {/* Notify checkbox */}
+          <fieldset className="flex-1 bg-base-200 border border-base-300 p-4 rounded-box">
+            <legend className="fieldset-legend">System notifications</legend>
+            <label className="fieldset-label">
+              <input
+                type="checkbox"
+                className="toggle toggle-accent"
+                onChange={(e) => {
+                  if (Notification.permission !== "granted") {
+                    Notification.requestPermission();
+                  }
+                  setNotify(e.target.checked);
+                }}
+              />
+              Turn{" "}
+              {notify ? (
+                <span className="text-secondary">off</span>
+              ) : (
+                <span className="text-accent">on</span>
+              )}{" "}
+              notifications
+            </label>
+          </fieldset>
+        </div>
+        <div className="w-full">
+          {/* Search bar */}
+          <fieldset className="flex-1 bg-base-200 border border-base-300 p-4 rounded-box">
+            <legend className="fieldset-legend">Search</legend>
+            <input
+              type="number"
+              min="0"
+              placeholder="Min price"
+              className="input w-full"
+              value={minPrice}
+              onChange={(e) => {}}
+            />
+          </fieldset>
+        </div>
       </div>
     </div>
   );
