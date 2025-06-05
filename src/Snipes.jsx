@@ -23,6 +23,7 @@ function Snipes() {
     max_price: 9999999 ?? "",
     risk_factor: -1,
     market: "",
+    sort: "newest",
   });
   const [notification, setNotification] = useState(false);
   let items = [];
@@ -44,7 +45,9 @@ function Snipes() {
   };
 
   const fetchNewData = async () => {
-    const new_data = await fetchData(endpoints[0], filters, 1);
+    let new_filters = { ...filters };
+    new_filters.sort = "newest";
+    const new_data = await fetchData(endpoints[0], new_filters, 1);
     if (!new_data) {
       setError("Failed to fetch data. Please try again later.");
       return;
@@ -96,7 +99,7 @@ function Snipes() {
         }}
       />
       <div className="text-center sticky top-0 z-20 bg-base-200 py-3">
-        The latest Snipes
+        The latest Snipes (Live)
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
         {newData.length !== 0
@@ -108,7 +111,7 @@ function Snipes() {
             ))}
       </div>
       <div className="text-center sticky top-0 z-20 bg-base-200 py-3">
-        Older Snipes
+        Snipes Overview (Second section not live)
       </div>
       <InfiniteScroll
         dataLength={oldData.length}
