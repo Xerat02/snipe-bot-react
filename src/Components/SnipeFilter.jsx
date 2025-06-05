@@ -120,12 +120,12 @@ function SnipeFilter({ onFilterChange }) {
               )}
             </summary>
 
-            <ul className="w-full menu dropdown-content bg-base-100 rounded-box z-1 p-2 shadow-sm">
+            <ul className="w-full !flex-col dropdown-content bg-base-100 rounded-box z-1 p-2 shadow-sm max-h-62 overflow-y-auto">
               {/* Pokud není vybrán žádný market */}
               {!marketSelected && (
                 <li
                   key="no_selected_market"
-                  className="text-center cursor-not-allowed"
+                  className="flex items-center justify-center gap-2 p-2 rounded cursor-not-allowed text-gray-500"
                 >
                   <a>Select market</a>
                 </li>
@@ -136,7 +136,7 @@ function SnipeFilter({ onFilterChange }) {
                 <li key="cancel_filter" className="text-center font-semibold">
                   <a
                     onClick={() => setMarketSelected(null)}
-                    className="text-error hover:bg-error hover:text-error-content rounded cursor-pointer"
+                    className="flex items-center justify-center gap-2 p-2 hover:bg-base-200 rounded cursor-pointer hover:text-error sticky top-0 z-10"
                   >
                     ❌ Cancel filter
                   </a>
@@ -167,10 +167,10 @@ function SnipeFilter({ onFilterChange }) {
                 <li
                   disabled
                   key="loading_markets"
-                  className="text-center cursor-not-allowed"
+                  className="flex items-center gap-2 p-2 rounded cursor-progress bg-base-200"
                 >
                   <a>
-                    <span className="loading loading-spinner loading-xs"></span>
+                    <span className="loading loading-spinner loading-xs mr-2"></span>
                     Loading markets...
                   </a>
                 </li>

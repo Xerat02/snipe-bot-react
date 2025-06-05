@@ -254,6 +254,7 @@ function Stats() {
                 fetchHistoData(marketStats[index]._id);
               }}
             >
+              <img src={item.market_logo} className="w-8 mr-2" />
               <div>{item._id}</div>
             </div>
           ))}

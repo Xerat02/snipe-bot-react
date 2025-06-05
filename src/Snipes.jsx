@@ -15,6 +15,7 @@ function Snipes() {
   const [oldData, setOldData] = useState([]);
   const [newData, setNewData] = useState([]);
   const [hasMore, setHasMore] = useState(true);
+  const [noData, setNoData] = useState(true);
   const [page, setPage] = useState(1);
   const [error, setError] = useState(null);
   const [filters, setFilters] = useState({
@@ -53,8 +54,11 @@ function Snipes() {
       return;
     }
     if (new_data.length === 0) {
+      setNoData(true);
+      setNewData([]);
       return;
     }
+
     new_data.forEach((item) => {
       if (notification) {
         if (!items.includes(item._id)) {
@@ -81,9 +85,10 @@ function Snipes() {
   }, [filters]);
 
   useEffect(() => {
+    setNoData(false);
     setPage(1);
     setOldData([]);
-    setOldData([]);
+    setNewData([]);
     setHasMore(true);
     fetchNewData();
     fetchOldData();
@@ -98,59 +103,68 @@ function Snipes() {
           setFilters(newFilters);
         }}
       />
-      <div className="text-center sticky top-0 z-20 bg-base-200 py-3">
-        The latest Snipes (Live)
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
-        {newData.length !== 0
-          ? newData.map((item, index) => (
-              <ItemCard key={`${item._id}-${index}`} data={item} />
-            ))
-          : [...Array(8)].map((_, i) => (
-              <ItemCardSkeleton key={`new_data_skeleton${i}`} />
-            ))}
-      </div>
-      <div className="text-center sticky top-0 z-20 bg-base-200 py-3">
-        Snipes Overview (Second section not live)
-      </div>
-      <InfiniteScroll
-        dataLength={oldData.length}
-        next={fetchOldData}
-        hasMore={hasMore}
-        loader={
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
-            {[...Array(8)].map((_, i) => (
-              <ItemCardSkeleton key={`old_data_skeleton${i}`} />
-            ))}
-          </div>
-        }
-        endMessage={
-          <div role="alert" className="alert alert-warning my-2">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6 shrink-0 stroke-current"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-              />
-            </svg>
-            <span>No more data to display!</span>
-          </div>
-        }
-      >
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-4 overflow-y-hidden">
-          {oldData.length !== 0
-            ? oldData.map((item, index) => (
-                <ItemCard key={`${item._id}-${index}`} data={item} />
-              ))
-            : null}
+      {noData ? (
+        <div className="text-center my-4">
+          <h2 className="text-2xl font-bold">No Snipes Found</h2>
+          <p className="text-gray-500">Try adjusting your filters.</p>
         </div>
-      </InfiniteScroll>
+      ) : (
+        <>
+          <div className="text-center sticky top-0 z-20 bg-base-200 py-3">
+            The latest Snipes (Live)
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
+            {newData.length !== 0
+              ? newData.map((item, index) => (
+                  <ItemCard key={`${item._id}-${index}`} data={item} />
+                ))
+              : [...Array(8)].map((_, i) => (
+                  <ItemCardSkeleton key={`new_data_skeleton${i}`} />
+                ))}
+          </div>
+          <div className="text-center sticky top-0 z-20 bg-base-200 py-3">
+            Snipes Overview (Second section not live)
+          </div>
+          <InfiniteScroll
+            dataLength={oldData.length}
+            next={fetchOldData}
+            hasMore={hasMore}
+            loader={
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
+                {[...Array(8)].map((_, i) => (
+                  <ItemCardSkeleton key={`old_data_skeleton${i}`} />
+                ))}
+              </div>
+            }
+            endMessage={
+              <div role="alert" className="alert alert-warning my-2">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-6 w-6 shrink-0 stroke-current"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                  />
+                </svg>
+                <span>No more data to display!</span>
+              </div>
+            }
+          >
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-4 overflow-y-hidden">
+              {oldData.length !== 0
+                ? oldData.map((item, index) => (
+                    <ItemCard key={`${item._id}-${index}`} data={item} />
+                  ))
+                : null}
+            </div>
+          </InfiniteScroll>
+        </>
+      )}
     </>
   );
 }
