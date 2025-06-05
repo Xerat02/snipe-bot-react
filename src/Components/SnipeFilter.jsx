@@ -8,7 +8,7 @@ function SnipeFilter({ onFilterChange }) {
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(99999999);
   const [market, setMarket] = useState([]);
-  const [marketSelected, setMarketSelected] = useState("");
+  const [marketSelected, setMarketSelected] = useState(null);
   const [lastUpdate, setLastUpdate] = useState(Date.now());
   const [error, setError] = useState(null);
   const [risk, setRisk] = useState(0);
@@ -30,8 +30,8 @@ function SnipeFilter({ onFilterChange }) {
 
     for (let i = 0; i < new_data.length; i++) {
       let logo = "";
-      if (new_data[i].logo) {
-        logo = new_data[i].logo;
+      if (new_data[i].market_logo) {
+        logo = new_data[i].market_logo;
       }
       ar.push([new_data[i]._id, logo]);
     }
@@ -45,7 +45,7 @@ function SnipeFilter({ onFilterChange }) {
       buff_discount: discount,
       min_price: minPrice,
       max_price: maxPrice,
-      market: marketSelected,
+      market: marketSelected ? marketSelected[0] : "",
       risk_factor: risk,
       sort: sort,
     };
@@ -67,7 +67,7 @@ function SnipeFilter({ onFilterChange }) {
     return <ErrorMessage message={error} />;
   }
   return (
-    <div className="w-full bg-base-100 shadow-xl rounded-lg mt-2 p-4 sticky top-12 z-50">
+    <div className="w-full bg-base-100 shadow-xl rounded-lg mt-2 p-4 xl:sticky xl:top-12 z-50">
       <div className="flex flex-col xl:flex-row gap-4 w-full">
         {/* Discount slider */}
         <fieldset className="flex-1 bg-base-200 border border-base-300 p-4 rounded-box">
@@ -104,25 +104,79 @@ function SnipeFilter({ onFilterChange }) {
         {/* Market select */}
         <fieldset className="flex-1 bg-base-200 border border-base-300 p-4 rounded-box">
           <legend className="fieldset-legend">Market</legend>
-          <select
-            className="select select-md w-full"
-            value={marketSelected || "-1"}
-            onChange={(e) => {
-              const value = e.target.value === "-1" ? null : e.target.value;
-              setMarketSelected(value);
-            }}
-          >
-            <option value="">Select market</option>
-            {market?.length > 0 ? (
-              market.map((item) => (
-                <option key={item} value={item}>
-                  {item}
-                </option>
-              ))
-            ) : (
-              <option disabled>Loading markets...</option>
-            )}
-          </select>
+          <details className="dropdown w-full">
+            <summary className="w-full btn mb-1 bg-[#1d232a] flex items-center gap-2">
+              {marketSelected ? (
+                <>
+                  <img
+                    src={marketSelected[1]}
+                    alt={marketSelected[0]}
+                    className="w-5 h-5"
+                  />
+                  {marketSelected[0]}
+                </>
+              ) : (
+                "Select market"
+              )}
+            </summary>
+
+            <ul className="w-full menu dropdown-content bg-base-100 rounded-box z-1 p-2 shadow-sm">
+              {/* Pokud není vybrán žádný market */}
+              {!marketSelected && (
+                <li
+                  key="no_selected_market"
+                  className="text-center cursor-not-allowed"
+                >
+                  <a>Select market</a>
+                </li>
+              )}
+
+              {/* Možnost zrušit filtr */}
+              {marketSelected && (
+                <li key="cancel_filter" className="text-center font-semibold">
+                  <a
+                    onClick={() => setMarketSelected(null)}
+                    className="text-error hover:bg-error hover:text-error-content rounded cursor-pointer"
+                  >
+                    ❌ Cancel filter
+                  </a>
+                </li>
+              )}
+
+              {/* Seznam marketů */}
+              {Array.isArray(market) && market.length > 0 ? (
+                market.map((item) => (
+                  <li
+                    key={item[0]}
+                    className={
+                      marketSelected?.[0] === item[0]
+                        ? "bg-primary text-primary-content rounded"
+                        : ""
+                    }
+                  >
+                    <a
+                      onClick={() => setMarketSelected(item)}
+                      className="flex items-center gap-2 p-2 hover:bg-base-200 rounded cursor-pointer"
+                    >
+                      <img src={item[1]} alt={item[0]} className="w-5 h-5" />
+                      {item[0]}
+                    </a>
+                  </li>
+                ))
+              ) : (
+                <li
+                  disabled
+                  key="loading_markets"
+                  className="text-center cursor-not-allowed"
+                >
+                  <a>
+                    <span className="loading loading-spinner loading-xs"></span>
+                    Loading markets...
+                  </a>
+                </li>
+              )}
+            </ul>
+          </details>
         </fieldset>
 
         {/* Risk select */}
