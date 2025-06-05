@@ -61,7 +61,10 @@ function ItemCard({ data }) {
 
       {/* Logo marketu v pravém rohu */}
       {data.market_logo && (
-        <div className="absolute top-2 right-2 z-10">
+        <div
+          className="tooltip tooltip-left absolute top-2 right-2 z-10"
+          data-tip={data.market_name}
+        >
           <img
             src={data.market_logo}
             alt={data.market_name}
