@@ -88,7 +88,6 @@ function Snipes() {
     setNoData(false);
     setPage(1);
     setOldData([]);
-    setNewData([]);
     setHasMore(true);
     fetchNewData();
     fetchOldData();

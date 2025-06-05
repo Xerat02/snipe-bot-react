@@ -329,14 +329,14 @@ function Stats() {
       {/* Market histogram */}
       <GraphCardsContainer>
         <GraphCard
-          title={` Offers count by days for ${
+          title={` Offers count for last 2 weeks by days for ${
             marketStats[activeMarket]?._id || "selected market"
           }`}
         >
           {histoData && histoData.length > 0 ? (
             <BarChart
               width={500}
-              height={300}
+              height={500}
               data={histoData}
               margin={{
                 top: 20,
@@ -345,10 +345,36 @@ function Stats() {
                 bottom: 5,
               }}
             >
-              <CartesianGrid strokeDasharray="4 4" />
-              <XAxis dataKey="bin_label" />
-              <YAxis allowDecimals={false} />
-              <Tooltip formatter={(value) => [`${value} listings`, "Count"]} />
+              <CartesianGrid strokeDasharray="7 7" />
+              <XAxis
+                dataKey="bin_label"
+                label={{
+                  value: "Days",
+                  position: "left",
+                }}
+                height={70}
+              />
+              <YAxis
+                allowDecimals={false}
+                label={{
+                  value: "Snipes count",
+                  angle: -90,
+                  position: "left",
+                }}
+                width={70}
+              />
+              <Tooltip
+                formatter={(value) => [`${value} snipes`, "Count"]}
+                contentStyle={{
+                  backgroundColor: "#1e293b",
+                  borderColor: "#334155",
+                  borderRadius: "8px",
+                  color: "#f8fafc",
+                }}
+                itemStyle={{
+                  color: "#f8fafc",
+                }}
+              />
               <Legend />
               <Bar
                 dataKey="count"

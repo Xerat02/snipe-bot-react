@@ -53,10 +53,11 @@ function SnipeFilter({ onFilterChange }) {
   };
 
   useEffect(() => {
-    if (Date.now() - lastUpdate > 300) {
-      setLastUpdate(Date.now());
+    const timeoutId = setTimeout(() => {
       updateFilters();
-    }
+    }, 200);
+
+    return () => clearTimeout(timeoutId);
   }, [discount, minPrice, maxPrice, marketSelected, risk, notify, sort]);
 
   useEffect(() => {
@@ -264,6 +265,8 @@ function SnipeFilter({ onFilterChange }) {
             <option value="market_price_asc">Market price (Asc)</option>
             <option value="buff_price_desc">Buff price (Desc)</option>
             <option value="buff_price_asc">Buff price (Asc)</option>
+            <option value="discount_desc">Discount (Desc)</option>
+            <option value="discount_asc">Discount (Asc)</option>
           </select>
           <p className="textarea-xs text-gray-500 mt-2">
             Applicable only for snipes Overview
